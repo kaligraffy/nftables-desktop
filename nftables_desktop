@@ -1,0 +1,72 @@
+#!/bin/bash
+# shellcheck disable=SC2086
+
+set -eu
+# applies a basic nftables firewall for a desktop linux pc, installs nftables, enables the service
+# allows http,https, dns, dns over tls, ntp and ntpsec, and outbound pings
+# meant to be absolutely bare bones, the config is stored in nftables.conf
+
+print_usage(){
+  local usage=$(cat << 'HERE' 
+  
+Usage: sudo ./nftables_desktop ARG1
+
+ARG1 can be:
+-e or enable - enable firewall
+-d or disable - disable firewall
+-h or help - prints this help message
+HERE
+)
+  echo "$usage"
+  modinfo nf_tables
+}
+
+check_run_as_root(){
+  if (( EUID != 0 )); then
+    echo "This script must be run as root/sudo"
+    exit 1
+  fi
+}
+
+enable_firewall(){
+  apt-get -yy install nftables
+  mv /etc/nftables.conf /etc/nftables.conf.original
+  cp -pr nftables.conf /etc/nftables.conf
+  nft -f /etc/nftables.conf
+  systemctl enable nftables.service
+  nft list ruleset
+}
+
+disable_firewall(){
+  nft flush ruleset
+  systemctl disable nftables.service
+  nft list ruleset
+}
+
+main(){
+  echo "$(basename "$0") started"
+  check_run_as_root
+  
+  case $1 in
+    enable|-e|-E)
+      #install iptables, and the iptables-persistent package which can load your rules on startup
+      enable_firewall
+      ;;
+    disable|-d|-D)
+      disable_firewall
+      ;;
+    help|-h|-H)
+      #print help
+      print_usage
+      ;;
+    *)
+      print_usage
+      ;;
+  esac
+   
+  echo "$(basename "$0") finished"
+  exit 0;
+}
+
+# Run program
+main "${1:-'-h'}"
