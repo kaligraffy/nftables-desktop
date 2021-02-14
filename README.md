@@ -1,23 +1,17 @@
-﻿# nftables_desktop
+# nftables_desktop
 Basic firewall setup script for linux using nftables
 
-Logs everything, limits dropped packets
+Usage:
+ update nftables.conf with your changes
+ sudo ./nftables_desktop 
 
-Drops anything not matching one of the rules (increased privacy)
+The default conf:
+- Logs everything, limits dropped packets
+- Drops anything not matching one of the rules (increased privacy)
+- Allows http/https/dns/dns over tls/outbound ssh by default
+- Applies rules in both ip4 and ip6
+- Allows ping outbound
 
-Applies rules in both ip4 and ip6
-
-Allows ping outbound
-
-Disallows any 'new' connections inbound
-
-You may need to add some rules for inbound SSH 
-
-If you do, change the script or use the iptables --insert so your rules don't end up under the default drop rules.
-
-Tested for debian (uses apt)
+Tested on Debian            
 
 Outputs logs to the syslog
-
-Usage: set your config nftables.conf
-./nftables_desktop -e to enable it
