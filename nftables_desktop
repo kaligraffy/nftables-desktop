@@ -1,5 +1,4 @@
 #!/bin/bash
-# shellcheck disable=SC2086
 
 set -eu
 
@@ -10,6 +9,7 @@ set -eu
 nftables_conf='/etc/nftables.conf'
 
 print_usage(){
+  # shellcheck disable=SC2155
   local usage=$(cat << 'HERE' 
   
 Usage: sudo ./nftables_desktop ARG1
