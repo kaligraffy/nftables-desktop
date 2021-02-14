@@ -20,3 +20,4 @@ Tested for debian (uses apt)
 Outputs logs to the syslog
 
 Usage: set your config nftables.conf
+./nftables_desktop -e to enable it
