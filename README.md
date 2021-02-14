@@ -2,8 +2,8 @@
 Basic firewall setup script for linux using nftables
 
 Usage:
- update nftables.conf with your changes
- sudo ./nftables_desktop 
+- update nftables.conf with your changes
+- sudo ./nftables_desktop 
 
 The default conf:
 - Logs everything, limits dropped packets
