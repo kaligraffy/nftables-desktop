@@ -5,8 +5,9 @@ set -eu
 # applies a basic nftables firewall for a desktop linux pc, installs nftables, enables the service
 # allows http,https, dns, dns over tls, ntp and ntpsec, and outbound pings
 # meant to be absolutely bare bones, the config is stored in nftables.conf
-
+# edit this file:
 nftables_conf='/etc/nftables.conf'
+# to adjust the rules
 
 print_usage(){
   # shellcheck disable=SC2155
@@ -42,6 +43,7 @@ install_firewall(){
 enable_firewall(){
   mv "${nftables_conf}" "${nftables_conf}.backup"
   cp -pr "nftables.conf" "${nftables_conf}"
+  cp -pr "rules" "${nftables_conf}"
   nft -f "${nftables_conf}"
   systemctl enable nftables.service
   nft list ruleset
