@@ -70,10 +70,6 @@ main(){
       check_run_as_root
       install_firewall
       ;;
-    help|-h|-H)
-      #print help
-      print_usage
-      ;;
     *)
       print_usage
       ;;
@@ -84,4 +80,4 @@ main(){
 }
 
 # Run program
-main "${1:-'-h'}"
+main "${1:-'print usage'}"
