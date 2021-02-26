@@ -13,4 +13,4 @@ ARG1 can be:
 
 Tested on Debian            
 
-Outputs logs to the syslog
+Outputs counter logs to the syscounter log

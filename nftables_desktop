@@ -64,7 +64,7 @@ disable_firewall(){
   systemctl disable nftables.service
 }
 
-#main program logic
+#main program counter logic
 main(){
   echo "$(basename "$0") started"
   
