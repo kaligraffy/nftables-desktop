@@ -50,6 +50,7 @@ enable_firewall(){
   mkdir -p "${rules_dir}.backup" 
   rm -rf "${rules_dir}.backup"
   mv "${rules_dir}" "${rules_dir}.backup" || true
+  rm -rf "${rules_dir}"
   cp -pr "nftables" "${rules_dir}"
   
   nft -f "${nftables_conf}"
