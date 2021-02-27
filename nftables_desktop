@@ -43,18 +43,20 @@ install_firewall(){
 
 #backup and replace rules with nftables.conf 
 enable_firewall(){
-  mv "${nftables_conf}" "${nftables_conf}.backup" || true
+  
+  if [ -f "${nftables_conf}" ]; then
+    rm -rf "${nftables_conf}.backup" || true
+    mv "${nftables_conf}" "${nftables_conf}.backup"
+  fi
+
+  if [ -d "${rules_dir}" ]; then
+    rm -rf "${rules_dir}.backup" || true
+    mv "${rules_dir}" "${rules_dir}.backup" 
+  fi
+
   cp -pr "nftables.conf" "${nftables_conf}"
-  
-  mkdir -p "${rules_dir}"
-  mkdir -p "${rules_dir}.backup" 
-  rm -rf "${rules_dir}.backup"
-  mv "${rules_dir}" "${rules_dir}.backup" || true
-  rm -rf "${rules_dir}"
   cp -pr "nftables" "${rules_dir}"
-  
   nft -f "${nftables_conf}"
-  
   systemctl enable nftables.service
   nft list ruleset
 }
