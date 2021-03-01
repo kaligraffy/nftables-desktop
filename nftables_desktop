@@ -19,7 +19,8 @@ Usage: sudo ./nftables_desktop ARG1
 
 ARG1 can be:
 -i or install - installs nftables
--e or enable - enable firewall
+-r or restrictive - enable the restrictive firewall
+-p or permissive - enable permissive firewall (allow all but log it)
 -d or disable - disable firewall
 -h or help - prints this help message
 
@@ -41,21 +42,32 @@ install_firewall(){
   apt-get -yy install nftables  
 }
 
-#backup and replace rules with nftables.conf 
-enable_firewall(){
-  
+backup_current_rules(){
   if [ -f "${nftables_conf}" ]; then
     rm -rf "${nftables_conf}.backup" || true
-    mv "${nftables_conf}" "${nftables_conf}.backup"
+    mv "${nftables_conf}" "${nftables_conf}.backup" || true
   fi
 
   if [ -d "${rules_dir}" ]; then
     rm -rf "${rules_dir}.backup" || true
-    mv "${rules_dir}" "${rules_dir}.backup" 
+    mv "${rules_dir}" "${rules_dir}.backup" || true
   fi
+}
 
-  cp -pr "nftables.conf" "${nftables_conf}"
+#backup and replace rules with nftables.conf 
+enable_restrictive_firewall(){
+  backup_current_rules
+  cp -pr "nftables-restrictive.conf" "${nftables_conf}"
   cp -pr "nftables" "${rules_dir}"
+  nft -f "${nftables_conf}"
+  systemctl enable nftables.service
+  nft list ruleset
+}
+
+enable_permissive_firewall(){
+  backup_current_rules
+  cp -pr "nftables-permissive.conf" "${nftables_conf}"
+
   nft -f "${nftables_conf}"
   systemctl enable nftables.service
   nft list ruleset
@@ -65,6 +77,7 @@ enable_firewall(){
 disable_firewall(){
   nft flush ruleset
   systemctl disable nftables.service
+  nft list ruleset
 }
 
 #main program counter logic
@@ -72,13 +85,17 @@ main(){
   echo "$(basename "$0") started"
   
   case $1 in
-    enable|-e|-E)
+    restrictive|-r|-R)
       check_run_as_root
-      enable_firewall
+      enable_restrictive_firewall
       ;;
     disable|-d|-D)
       check_run_as_root
       disable_firewall
+      ;;
+    permissive|-p|-P)
+      check_run_as_root
+      enable_permissive_firewall
       ;;
     install|-i|-I)
       check_run_as_root
