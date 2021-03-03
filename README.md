@@ -1,16 +1,14 @@
 # nftables_desktop
-Basic firewall setup script for linux using nftables
+Basic firewall/firewall setup script for linux using nftables
 
-Usage:
-- update nftables.conf with your changes 
-- sudo ./nftables_desktop ARG1
+- update nftables-restrictive.conf with your configuration 
+- sudo ./nftables-apply -r
 
-ARG1 can be:
-- -i or install - installs nftables
-- -e or enable - enable firewall
-- -d or disable - disable firewall
-- -h or help - prints this help message
+For other options run ./nftables_apply for usage info
 
-Tested on Debian            
+###Testing###
+- Tested on Debian
 
-Outputs counter logs to the syscounter log
+###Issues###
+- logging by default to syslog 
+

@@ -15,7 +15,7 @@ print_usage(){
   # shellcheck disable=SC2155
   local usage=$(cat << 'HERE' 
   
-Usage: sudo ./nftables_desktop ARG1
+Usage: sudo ./nftables-apply ARG1
 
 ARG1 can be:
 -i or install - installs nftables
@@ -40,15 +40,18 @@ check_run_as_root(){
 #install firewall
 install_firewall(){
   apt-get -yy install nftables  
+  echo "nftables package firewall enabled"
 }
 
 backup_current_rules(){
   if [ -f "${nftables_conf}" ]; then
+    echo "backing up existing nftables.conf to ${nftables_conf}.backup"
     rm -rf "${nftables_conf}.backup" || true
     mv "${nftables_conf}" "${nftables_conf}.backup" || true
   fi
 
   if [ -d "${rules_dir}" ]; then
+    echo "backing up existing rules directory to ${rules_dir}.backup"
     rm -rf "${rules_dir}.backup" || true
     mv "${rules_dir}" "${rules_dir}.backup" || true
   fi
@@ -61,7 +64,7 @@ enable_restrictive_firewall(){
   cp -r "nftables" "${rules_dir}"
   nft -f "${nftables_conf}"
   systemctl enable nftables.service
-  nft list ruleset
+  echo "restrictive firewall enabled"
 }
 
 enable_permissive_firewall(){
@@ -70,14 +73,14 @@ enable_permissive_firewall(){
 
   nft -f "${nftables_conf}"
   systemctl enable nftables.service
-  nft list ruleset
+  echo "permissive firewall enabled"
 }
 
 #flush all rules, disable the nftables service
 disable_firewall(){
   nft flush ruleset
   systemctl disable nftables.service
-  nft list ruleset
+  echo "firewall disabled"
 }
 
 #main program counter logic
