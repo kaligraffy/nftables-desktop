@@ -57,8 +57,8 @@ backup_current_rules(){
 #backup and replace rules with nftables.conf 
 enable_restrictive_firewall(){
   backup_current_rules
-  cp -pr "nftables-restrictive.conf" "${nftables_conf}"
-  cp -pr "nftables" "${rules_dir}"
+  cp "nftables-restrictive.conf" "${nftables_conf}"
+  cp -r "nftables" "${rules_dir}"
   nft -f "${nftables_conf}"
   systemctl enable nftables.service
   nft list ruleset
@@ -66,7 +66,7 @@ enable_restrictive_firewall(){
 
 enable_permissive_firewall(){
   backup_current_rules
-  cp -pr "nftables-permissive.conf" "${nftables_conf}"
+  cp "nftables-permissive.conf" "${nftables_conf}"
 
   nft -f "${nftables_conf}"
   systemctl enable nftables.service
